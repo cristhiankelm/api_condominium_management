@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\API;
+namespace App\Models\Api;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UnitVehicle extends Model
+class UnitPet extends Model
 {
     use HasFactory;
 
@@ -14,5 +14,5 @@ class UnitVehicle extends Model
     ];
 
     public $timestamps = false;
-    public $table = 'unit_vehicles';
+    public $table = 'unit_pets';
 }

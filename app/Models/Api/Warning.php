@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Models\API;
+namespace App\Models\Api;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Unit extends Model
+class Warning extends Model
 {
     use HasFactory;
 

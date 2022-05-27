@@ -1,14 +1,18 @@
 <?php
 
-namespace App\Models\API;
+namespace App\Models\Api;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class FoundAndLost extends Model
+class UnitVehicle extends Model
 {
     use HasFactory;
 
+    protected $hidden = [
+        'unit_id'
+    ];
+
     public $timestamps = false;
-    protected $table = 'found_and_lost';
+    public $table = 'unit_vehicles';
 }

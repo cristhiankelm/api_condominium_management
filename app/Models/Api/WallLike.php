@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Models\API;
+namespace App\Models\Api;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class AreaDisabledDay extends Model
+class WallLike extends Model
 {
     use HasFactory;
 
     public $timestamps = false;
-    protected $table = 'area_disabled_days';
+    protected $table = 'wall_likes';
 }
