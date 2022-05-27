@@ -4,8 +4,73 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+
+use App\Models\User;
+use App\Models\Api\Unit;
 
 class AuthController extends Controller
 {
-    //
+    public function unauthorized()
+    {
+        return response()->json([
+            'error' => 'Não autorizado'
+        ], 401);
+    }
+
+    public function register(Request $request)
+    {
+        $array = ['error' => ''];
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'cpf' => 'required|digits:11|unique:users,cpf',
+            'password' => 'required',
+            'password_confirmation' => 'required|same:password',
+        ]);
+
+        if (!$validator->fails()) {
+            $name = $request->input('name');
+            $email = $request->input('email');
+            $cpf = $request->input('cpf');
+            $password = $request->input('password');
+
+            $hash = password_hash($password, PASSWORD_DEFAULT);
+
+            $newUser = new User();
+            $newUser->name = $name;
+            $newUser->email = $email;
+            $newUser->cpf = $cpf;
+            $newUser->password = $hash;
+            $newUser->save();
+
+            $token = \auth()->attempt([
+                'cpf' => $cpf,
+                'password' => $password
+            ]);
+
+            if (!$token) {
+                $array['error'] = 'Ocorreu um erro!';
+                return $array;
+            }
+
+            $array['token'] = $token;
+
+            $user = \auth()->user();
+            $array['user'] = $user;
+
+            $properties = Unit::select(['id', 'name'])->where('owner_id', $user['id'])->get();
+
+            $array['user']['properties'] = $properties;
+
+        } else {
+            $array['error'] = $validator->errors()->first();
+            return $array;
+        }
+
+
+        return $array;
+    }
 }
