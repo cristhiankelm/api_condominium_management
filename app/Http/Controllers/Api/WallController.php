@@ -34,8 +34,37 @@ class WallController extends Controller
                 $walls[$wallKey]['liked'] = true;
             }
         }
-
         $array['list'] = $walls;
+
+        return $array;
+    }
+
+    public function like($id)
+    {
+        $array = ['error' => ''];
+
+        $user = auth()->user();
+
+        $meLikes = WallLike::where('wall_id', $id)
+            ->where('user_id', $user['id'])
+            ->count();
+
+        if ($meLikes > 0) {
+            WallLike::where('wall_id', $id)
+                ->where('user_id', $user['id'])
+                ->delete();
+
+            $array['liked'] = false;
+        } else {
+            $newLike = new WallLike();
+            $newLike->wall_id = $id;
+            $newLike->user_id = $user['id'];
+            $newLike->save();
+
+            $array['liked'] = true;
+        }
+
+        $array['likes'] = WallLike::where('wall_id', $id)->count();
 
         return $array;
     }
