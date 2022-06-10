@@ -65,4 +65,33 @@ class UnitController extends Controller
 
         return $array;
     }
+
+    public function addVehicle(Request $request, $id)
+    {
+        $array = ['error' => ''];
+
+        $validator = Validator::make($request->all(), [
+            'title' => 'required',
+            'color' => 'required',
+            'plate' => 'required',
+        ]);
+
+        if (!$validator->fails()) {
+            $title = $request->input('title');
+            $color = $request->input('color');
+            $plate = $request->input('plate');
+
+            $newVehicle = new UnitVehicle();
+            $newVehicle->unit_id = $id;
+            $newVehicle->title = $title;
+            $newVehicle->color = $color;
+            $newVehicle->plate = $plate;
+            $newVehicle->save();
+        } else {
+            $array['error'] = $validator->errors()->first();
+            return $array;
+        }
+
+        return $array;
+    }
 }
