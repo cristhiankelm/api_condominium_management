@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Api\Unit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 use App\Models\Api\Warning;
 
@@ -24,9 +26,9 @@ class WarningController extends Controller
 
             if ($unit > 0) {
                 $warnings = Warning::where('unit_id', $property)
-                ->orderBy('datecreated', 'DESC')
-                ->orderBy('id', 'DESC')
-                ->get();
+                    ->orderBy('datecreated', 'DESC')
+                    ->orderBy('id', 'DESC')
+                    ->get();
 
                 foreach ($warnings as $warnKey => $warnValue) {
                     $warnings[$warnKey]['datecreated'] = date('d/m/Y', strtotime($warnValue['datecreated']));
@@ -34,20 +36,40 @@ class WarningController extends Controller
                     $photos = explode(',', $warnValue['photos']);
                     foreach ($photos as $photo) {
                         if (!empty($photo)) {
-                            $photoList[] = asset('storage/'.$photo);
+                            $photoList[] = asset('storage/' . $photo);
                         }
                     }
                     $warnings[$warnKey]['photos'] = $photoList;
                 }
-
                 $array['list'] = $warnings;
+
             } else {
                 $array['error'] = 'Esta unidade não é sua';
             }
+
         } else {
             $array['error'] = 'A propriedade é necessária';
         }
 
+        return $array;
+    }
+
+    public function addWarningFile(Request $request)
+    {
+        $array = ['error' => ''];
+
+        $validator = Validator::make($request->all(), [
+            'photo' => 'required|file|mimes:jpg,png'
+        ]);
+
+        if (!$validator->fails()) {
+            $file = $request->file('photo')->store('public');
+
+            $array['photo'] = asset(Storage::url($file));
+        } else {
+            $array['error'] = $validator->errors()->first();
+            return $array;
+        }
 
         return $array;
     }
