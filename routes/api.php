@@ -59,7 +59,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/reservations', [ReservationController::class, 'getReservations']);
     Route::post('/reservation/{id}', [ReservationController::class, 'setReservation']);
 
-    Route::get('/reservation/{id}/disabled-dates', [ReservationController::class, 'getDisabledDays']);
+    Route::get('/reservation/{id}/disabled-dates', [ReservationController::class, 'getDisabledDates']);
     Route::get('/reservation/{id}/times', [ReservationController::class, 'getTimes']);
 
     Route::get('/my-reservations', [ReservationController::class, 'getMyReservations']);

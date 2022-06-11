@@ -144,4 +144,47 @@ class ReservationController extends Controller
 
         return $array;
     }
+
+    public function getDisabledDates($id)
+    {
+        $array = ['error' => '', 'list' => []];
+
+        $area = Area::find($id);
+
+        if ($area) {
+            //Dias disabled padrão
+            $disabledDays = AreaDisabledDay::where('area_id', $id)->get();
+            foreach ($disabledDays as $disabledDay) {
+                $array['list'][] = $disabledDay['day'];
+            }
+
+            //Dias disabled através do allowed
+            $allowedDays = explode(',', $area['days']);
+            $offDays = [];
+            for ($i = 0; $i < 7; $i++) {
+                if (!in_array($i, $allowedDays)) {
+                    $offDays[] = $i;
+                }
+            }
+
+            //Listar os dias proibidos +3 meses
+            $start = time();
+            $end = strtotime('+3 months');
+
+            for (
+                $current = $start;
+                $current < $end;
+                $current = strtotime('+1 day', $current)
+            ) {
+                $weekDay = date('w', $current);
+                if (in_array($weekDay, $offDays)) {
+                    $array['list'][] = date('Y-m-d', $current);
+                }
+            }
+        } else {
+            $area['error'] = 'Area inexistente';
+            return $array;
+        }
+        return $array;
+    }
 }
