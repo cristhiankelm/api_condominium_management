@@ -120,4 +120,21 @@ class UnitController extends Controller
 
         return $array;
     }
+
+    public function removePerson(Request $request, $id)
+    {
+        $array = ['error' => ''];
+
+        $idItem = $request->input('id');
+        if ($idItem) {
+            UnitPeople::where('id', $idItem)
+                ->where('unit_id', $id)
+                ->delete();
+        } else {
+            $array['error'] = 'ID inexistente';
+            return $array;
+        }
+
+        return $array;
+    }
 }
