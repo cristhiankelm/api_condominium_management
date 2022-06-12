@@ -63,5 +63,5 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/reservation/{id}/times', [ReservationController::class, 'getTimes']);
 
     Route::get('/my-reservations', [ReservationController::class, 'getMyReservations']);
-    Route::delete('/my-reservation/{id}', [ReservationController::class, 'delMyReservations']);
+    Route::delete('/my-reservation/{id}', [ReservationController::class, 'deleteMyReservation']);
 });
